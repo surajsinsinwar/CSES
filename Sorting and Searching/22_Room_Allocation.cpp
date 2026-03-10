@@ -45,18 +45,39 @@ void init()
 {
 	int n;
 	cin >> n;
-	vector<int> arr(n);
-	scan(arr);
-	set<int> s;
-	int end = 0;
-	long long ans = 0;
-
+	vector<pii> arr(n);
+	vector<pii> dep(n);
 	for(int i = 0; i < n; i++){
-		s.insert(arr[i]);
-		ans += 1LL << (s.size() - 1);
+		cin >> arr[i].ff >> dep[i].ff;
+		arr[i].ss = i;
+		dep[i].ss = i;
 	}
 
-	cout << ans;
+	sort(arr.begin(), arr.end());
+	sort(dep.begin(), dep.end());
+
+	vector<int> room(n + 1, 0);
+	queue<int> available;
+	int ans = 0, j = 0;
+
+	for(int i = 0; i < n; i++){
+		while(j < n && dep[j].ff < arr[i].ff){
+			available.push(room[dep[j].ss]);
+			j++;
+		}
+		if(available.empty()){
+			room[arr[i].ss] = ++ans;
+		}
+		else{
+			room[arr[i].ss] = available.front();
+			available.pop();
+		}
+	}
+
+	cout << ans << endl;
+	for(int i = 0 ; i < n; i++){
+		cout << room[i] << " ";
+	}
 
 	return;
 }
