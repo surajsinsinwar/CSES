@@ -41,8 +41,55 @@ void file_i_o()
 	cout.tie(0);
 }
 
+bool check(vector<int> &arr, long long mid, int k)
+{
+	int n = arr.size();
+	long long sum = 0;
+	int count = 1;
+
+	for(int i = 0; i < n; i++){
+		if(arr[i] > mid){
+			return false;
+		}
+		if(sum + arr[i] > mid){
+			count++;
+			sum = arr[i];
+		}
+		else{
+			sum += arr[i];
+		}
+	}
+
+	return count <= k;
+}
+
 void init()
 {
+	int n, k;
+	cin >> n >> k;
+
+	vector<int> arr(n);
+	scan(arr);
+
+	long long l = 1, r = 0;
+	for(int i = 0; i < n; i++){
+		r += arr[i];
+	}
+
+	while(l <= r){
+		long long mid = mid(l, r);
+		if(check(arr, mid, k)){
+			if(mid == l || !check(arr, mid - 1, k)){
+				cout << mid << endl;
+				return;
+			}
+			r = mid - 1;
+		}
+		else{
+			l = mid + 1;
+		}
+	}
+	cout << l << endl;
 
 	return;
 }
