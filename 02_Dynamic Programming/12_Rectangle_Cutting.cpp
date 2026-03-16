@@ -41,21 +41,36 @@ void file_i_o()
 	cout.tie(0);
 }
 
-int solve(vector<int> &a, vector<int> &v, int i, int j){
-	if(i < 0 || j < 0) return 0;
-	if(a[i] == v[j]) return 1 + solve(a, v, i - 1, j - 1);
-	return max(solve(a, v, i - 1, j), solve(a, v, i, j - 1));
+int solve(int n, int m, vector<vector<int>> &dp){
+	if(n == m) return 0;
+	if(dp[n][m] != -1) return dp[n][m];
+	int ans = INT_MAX;
+
+	for(int i = 1; i <= n / 2; i++){
+		int left = solve(n - i, m, dp);
+		int right = solve(i, m, dp);
+		if(left != INT_MAX && right != INT_MAX)
+			ans = min(ans, 1 + left + right);
+	}
+
+	for(int i = 1; i <= m / 2; i++){
+		int left = solve(n, m - i, dp);
+		int right = solve(n, i, dp);
+		if(left != INT_MAX && right != INT_MAX)
+			ans = min(ans, 1 + left + right);
+	}
+
+	return dp[n][m] = ans;
 }
 
 void init()
 {
 	int n, m;
 	cin >> n >> m;
-	vector<int> a(n), b(m);
-	scan(a);
-	scan(b);
 
-	// cout << solve(a, b, n - 1, m - 1) << endl;
+	vector<vector<int>> dp(n + 1, vector<int>(m + 1, -1));
+
+	cout << solve(n, m, dp) << endl;
 
 	return;
 }
